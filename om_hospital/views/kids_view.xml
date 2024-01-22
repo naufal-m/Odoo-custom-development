@@ -16,7 +16,7 @@
         <field name="domain">[('age', '&lt;=', 15)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first Kid !
+                Create your first Kid... !
             </p>
         </field>
     </record>
