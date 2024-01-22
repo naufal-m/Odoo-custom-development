@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- defined the views actions in the kids page. here model is use the same patient model 'res_model'.
+    So getting all views in here also. but one condition listing the records from patient with age less than or equal to 15 -->
+    <!--    each view forms is define by 'id', 'name', 'model name', 'arch' with 'xml' formats-->
+    <record id="action_hospital_kids" model="ir.actions.act_window">
+        <field name="name">Kids</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <!--        below code is used for if main view page is empty 'no content', then display a smily with text which described in <p> under <field>-->
+        <!--        Also the is_child check box become true by default by use below context-->
+        <field name="context">{'default_is_child':True}</field>
+        <!--        below a 'domain' use as condition to listing the records from the model 'res_model' based on 'age'-->
+        <field name="domain">[('age', '&lt;=', 15)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Kid !
+            </p>
+        </field>
+    </record>
+
+    <!-- define the menu -->
+    <menuitem id="menu_kids"
+              name="Kids"
+              parent="menu_patients_root"
+              action="action_hospital_kids"
+              sequence="40"/>
+
+</odoo>

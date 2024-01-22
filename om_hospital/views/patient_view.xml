@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- form view and id has a format that 'view_model name_view type' follow this to view type like form, tree, kanban, search-->
+    <record id="view_hospital_patient_form" model="ir.ui.view">
+        <field name="name">hospital.patient.form</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <form>
+                <!--                add the status states bar in the form view as in <header>.-->
+                <header>
+                    <!--                    here states used in button is looking to show the button under which states (status)-->
+                    <button id="btn_confirm" name="action_confirm" string="Confirm" type="object"
+                            states="draft,done,cancelled" class="btn-primary" confirm="Are you sure want to confirm?"/>
+                    <button id="btn_done" name="action_done" string="Mark as Done" type="object"
+                            states="draft,confirmed,cancelled" class="btn-primary"
+                            confirm="Are you sure want to proceed?"/>
+                    <button id="btn_cancelled" name="action_cancelled" string="Cancel" type="object"
+                            states="draft,done,confirmed" class="btn-primary" confirm="Are you sure want to cancel?"/>
+                    <button id="btn_draft" name="action_draft" string="Draft" type="object"
+                            states="done,confirmed,cancelled" class="btn-primary"
+                            confirm="Are you sure want to change the status back to draft?"/>
+
+                    <button id="btn_create_appointment_wiz" name="%(action_create_appointment)d" string="Create Appointment" type="action"
+                            class="btn-primary"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done,confirmed"/>
+                    <!--            If you need to apply click on the status tabs, just add 'options="{'clickable': '1'}"' in the above field-->
+                </header>
+                <!--                <sheet> is used to show odoo default form as display the form in the focused section bordered box-->
+                <sheet>
+                    <div class="oe_title">
+<!--                        add a field for image in the form view by using widget='image' and class='oe_avatar'-->
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <!--                    <group> is used to grouping the fields in side based order. multiple group can use is ordering in different position-->
+                    <group>
+                        <group>
+                            <!--                            <field> is used as model field technical name as 'name' to call that field name-->
+                            <field name="name"/>
+<!--                            <field name="responsible_id"/>-->
+                            <field name="mob"/>
+                            <field name="blood_group"/>
+                            <field name="appointment_count"/>
+                        </group>
+                        <group>
+                            <field name="dob"/>
+                            <field name="age"/>
+                            <field name="is_child"/>
+                            <field name="gender"/>
+                        </group>
+                    </group>
+                    <hr />
+                    <group>
+                        <field name="address"/>
+                        <field name="notes"/>
+                    </group>
+                    <notebook>
+                        <page string="Appointments" name="appointments">
+                            <field name="appointment_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!--                Adding the chatting section in the patient form view. class 'oe-chatter' is used for chatter-->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- tree view (list view)-->
+    <record id="view_hospital_patient_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <!--            Displaying the columns in the list view (tree view)-->
+            <tree>
+                <field name="reference"/>
+                <field name="name" optional="show"/>
+                <field name="age" optional="hide"/>
+                <field name="gender" optional="hide"/>
+<!--                <field name="responsible_id" optional="show"/>-->
+                <field name="mob" optional="show"/>
+                <field name="blood_group" optional="hide"/>
+                <field name="state" optional="show"/>
+                <field name="appointment_count" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    define kanban view-->
+    <record id="view_hospital_patient_kanban" model="ir.ui.view">
+        <field name="name">hospital.patient.kanban</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <!--            Display info in Kanban format. here inside kanban view for arraging order in ascending use default_order-->
+            <kanban default_order="reference asc">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="mob"/>
+                <field name="gender"/>
+                <field name="blood_group"/>
+                <!--                <templates> is use for kanban view display along with <t> and <div> with lists (<ul> and <li>)-->
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <strong>Reference ID: </strong>
+                                        <field name="reference"/>
+                                    </li>
+                                    <li>
+                                        <strong>Name: </strong>
+                                        <field name="name"/>
+                                    </li>
+                                    <li>
+                                        <strong>Contact: </strong>
+                                        <field name="mob"/>
+                                    </li>
+                                    <li>
+                                        <strong>Gender: </strong>
+                                        <field name="gender"/>
+                                    </li>
+                                    <li>
+                                        <strong>Blood Group: </strong>
+                                        <field name="blood_group"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Search field-->
+    <record id="view_hospital_patient_search" model="ir.ui.view">
+        <field name="name">hospital.patient.search</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <!--                Filter the table as OR operator '|' for name and reference code in search-->
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('reference', 'ilike', self)]"/>
+                <field name="reference"/>
+                <field name="gender"/>
+                <field name="age"/>
+                <!--                Filter for gender under Filter option-->
+                <filter name="filter_male" string="Male" domain="[('gender', '=', 'male')]"/>
+                <filter name="filter_female" string="Female" domain="[('gender', '=', 'female')]"/>
+                <!--                Add AND operator in search field-->
+                <separator/>
+                <!--                '&lt;=' means the less than or equal to-->
+                <filter name="filter_child" string="Child" domain="[('age', '&lt;=', 15)]"/>
+                <!--                Making group by the records-->
+                <group expand="0" string="Group">
+                    <filter string="Gender" name="group_by_gender" context="{'group_by':'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- defined the views actions in the patient page -->
+    <!--    each view forms is define by 'id', 'name', 'model name' with 'xml' formats-->
+    <record id="action_hospital_patient" model="ir.actions.act_window">
+        <field name="name">Patient</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <!--        below code is used for if main view page is empty 'no content', then display a smily with text which described in <p> under <field>-->
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first patient !
+            </p>
+        </field>
+    </record>
+
+    <!-- define the menu -->
+    <menuitem id="menu_hospital_root"
+              name="Hospital"
+              sequence="10"/>
+
+    <menuitem id="menu_patients_root"
+              name="Patients"
+              parent="menu_hospital_root"
+              sequence="10"/>
+
+    <menuitem id="menu_patients"
+              name="Patients"
+              parent="menu_patients_root"
+              action="action_hospital_patient"
+              sequence="10"/>
+
+</odoo>

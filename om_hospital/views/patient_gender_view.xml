@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- defined the views actions in the Male page. here model is use the same patient model 'res_model'.
+    So getting all views in here also. but one condition listing the records from patient with age greater than 15 and should be male-->
+    <!--    each view forms is define by 'id', 'name', 'model name', 'arch' with 'xml' formats-->
+    <record id="action_hospital_male_patients" model="ir.actions.act_window">
+        <field name="name">Male Patients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <!--        below code is used for if main view page is empty 'no content', then display a smily with text which described in <p> under <field>-->
+        <field name="context">{'default_gender':'male'}</field>
+        <!--        below a 'domain' use as condition to listing the records from the model 'res_model' based on 'age'-->
+        <field name="domain">[('age', '&gt;', 15), ('gender', '=', 'male')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Male Patient !
+            </p>
+        </field>
+    </record>
+
+    <!-- define the menu -->
+    <menuitem id="menu_male_patients"
+              name="Male Patients"
+              parent="menu_patients_root"
+              action="action_hospital_male_patients"
+              sequence="20"/>
+
+    <!-- defined the views actions in the Female patients page. here model is use the same patient model 'res_model'.
+    So getting all views in here also. but one condition listing the records from patient with age greater than 15 and should be female-->
+    <!--    each view forms is define by 'id', 'name', 'model name', 'arch' with 'xml' formats-->
+    <record id="action_hospital_female_patients" model="ir.actions.act_window">
+        <field name="name">Female Patients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <!--        below code is used for if main view page is empty 'no content', then display a smily with text which described in <p> under <field>-->
+        <!--        Also below context mention the gender by default as 'female'-->
+        <field name="context">{'default_gender':'female'}</field>
+        <!--        below a 'domain' use as condition to listing the records from the model 'res_model' based on 'age'-->
+        <field name="domain">[('age', '&gt;', 15), ('gender', '=', 'female')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Female Patient !
+            </p>
+        </field>
+    </record>
+
+    <!-- define the menu -->
+    <menuitem id="menu_female_patients"
+              name="Female Patients"
+              parent="menu_patients_root"
+              action="action_hospital_female_patients"
+              sequence="30"/>
+
+</odoo>

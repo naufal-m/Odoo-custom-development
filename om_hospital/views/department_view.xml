@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- form view and id has a format that 'view_model name_view type' follow this to view type like form, tree, kanban, search-->
+    <record id="view_hospital_department_form" model="ir.ui.view">
+        <field name="name">hospital.department.form</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <form>
+                <!--                <sheet> is used to show odoo default form as display the form in the focused section bordered box-->
+                <sheet>
+                    <div class="oe_title">
+<!--                        add a field for image in the form view by using widget='image' and class='oe_avatar'-->
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <!--                    <group> is used to grouping the fields in side based order. multiple group can use is ordering in different position-->
+                    <group>
+                        <group>
+                            <!--                            <field> is used as model field technical name as 'name' to call that field name-->
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+                <!--                Adding the chatting section in the patient form view. class 'oe-chatter' is used for chatter-->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- tree view (list view)-->
+    <record id="view_hospital_department_tree" model="ir.ui.view">
+        <field name="name">hospital.department.tree</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <!--            Displaying the columns in the list view (tree view), here sample="1" is defined as default list view with dummy data-->
+            <tree sample="1">
+                <field name="reference"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    define kanban view-->
+    <record id="view_hospital_department_kanban" model="ir.ui.view">
+        <field name="name">hospital.department.kanban</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <!--            Display info in Kanban format, here sample="1" is defined as default kanban view with dummy data-->
+            <kanban sample="1">
+                <field name="reference"/>
+                <field name="name"/>
+                <!--                <templates> is use for kanban view display along with <t> and <div> with lists (<ul> and <li>)-->
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <strong>Department ID: </strong>
+                                        <field name="reference"/>
+                                    </li>
+                                    <li>
+                                        <strong>Department name: </strong>
+                                        <field name="name"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Search field-->
+    <record id="view_hospital_department_search" model="ir.ui.view">
+        <field name="name">hospital.department.search</field>
+        <field name="model">hospital.department</field>
+        <field name="arch" type="xml">
+            <search>
+                <!--                Filter the table as OR operator '|' for name and reference code in search-->
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('reference', 'ilike', self)]"/>
+                <field name="reference"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- defined the views actions in the patient page -->
+    <!--    each view forms is define by 'id', 'name', 'model name' with 'xml' formats-->
+    <record id="action_hospital_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.department</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <!--        below code is used for if main view page is empty 'no content', then display a smily with text which described in <p> under <field>-->
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Department !
+            </p>
+        </field>
+    </record>
+
+    <!-- define the menu -->
+    <menuitem id="menu_department"
+              name="Department"
+              parent="menu_doctor_root"
+              action="action_hospital_department"
+              sequence="20"/>
+
+</odoo>

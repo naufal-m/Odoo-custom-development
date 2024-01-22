@@ -1,0 +1,37 @@
+# For hiding a field from the from any of the form, set 'hide_gender' set to 1,
+    <field name="context">{'default_gender':'female', 'hide_gender':1}</field>
+# then in the main form and on the specific field required to hide,
+    <field name="gender" invisible="context.get('hide_gender')"/>
+from the om_hospital application, the gender field from the female_patient form would be hidden once set the 'hide_gender' as '1'
+.
+# below a 'domain' use as condition to listing the records from the model 'res_model' based on 'age' greater than 15 also set list based on 'female'-->
+    <field name="domain">[('age', '&gt;', 15), ('gender', '=', 'female')]</field>
+
+# Also below context mention the gender by default as 'female'-->
+    <field name="context">{'default_gender':'female'}</field>
+# Also the is_child check box becomes true by default by use below context-->
+    <field name="context">{'default_is_child':True}</field>
+
+# Here the confirm attribute in the xml form button tags, opening a popup for confirmation on clicking the button
+    confirm="Are you sure want to confirm?"
+
+patient_appointment_count = self.env['hospital.appointment'].search_count([('patient_id', '=', self.id)])
+the above count we can write in the query format as:
+    SELECT count(*) FROM hospital.appointment WHERE patient_id=id
+
+set default value into the field by using method
+ ///   @api.model
+    def default_get(self, fields):
+        res = super(HospitalPatient, self).default_get(fields)
+        res['gender'] = "female"
+        return res  ///
+
+while creating field in model. if any field not showing correct value, then need to use _rec_name="call that field name"
+_order = "name desc" is used to arrange the order of record based on the descending order. for ascending use 'asc'. Add this line
+    at the top from the fields next to the class of model file.
+similarly in the view leve for order in the ascending or descending use default_order="field_name asc/desc". this can applicable for
+<kanban default_order="">, <tree default=""> like this
+
+during duplicating any record, any field is not required to copy into new copied record, add 'copy=False' in the field from the model
+
+del unlink(self) function is call when the delete action taken
